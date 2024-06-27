@@ -135,7 +135,7 @@ for feat, vf, sigma in dataloader:
     # vf: [N, M], batch of target VF vector
     # sigma: [N, 1], batch of sigma scalar, which is estimated on feat.
 
-    pred_vf, denoised_feat = model(feat, True)
+    pred_vf = model(feat)
 
     pred_loss = ((pred_vf - vf) ** 2).mean(1)  # [N]
     sure_loss = mc_sure(feat, model.encoder, sigma, eps)  # [N]
