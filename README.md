@@ -10,25 +10,13 @@ import torch
 from torchvision.models import resnet18, ResNet18_Weights
 from torchvision import transforms
 
-# define forward for resnet
-def resnet_features(model, x):
-    x = model.conv1(x)
-    x = model.bn1(x)
-    x = model.relu(x)
-    x = model.maxpool(x)
-
-    x = model.layer1(x)
-    x = model.layer2(x)
-    x = model.layer3(x)
-    x = model.layer4(x)
-
-    x = model.avgpool(x)
-    x = torch.flatten(x, 1)
-    return x
 
 # load pretrained model
 backbone = resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
 backbone.eval()
+
+# remove the last fc layer
+backbone.fc = torch.nn.Indentity()
 
 # defined image transform
 input_resolution = 384
@@ -45,7 +33,7 @@ image_list = load_your_fundus_images()
 feat_list = []
 for img in image_list:
     img = transform(img)
-    feat = resnet_features(backbone, img)
+    feat = backbone(img)
     feat_list.append(feat_list)
 ```
 
@@ -68,7 +56,6 @@ class MLP(nn.Module):
             self.encoder = nn.Identity()
         else:
             for i in range(len(dim_list) - 2):
-                print(i, dim_list[i], dim_list[i + 1])
                 encoder += [nn.Linear(dim_list[i], dim_list[i + 1], bias=bias), act_func]
             self.encoder = nn.Sequential(*encoder)
 
@@ -94,9 +81,10 @@ model = MLP(dim_list=[512, 512, 52], act_func=nn.ReLU(inplace=True), bias=True)
 ### Training model with MC-SURE
 ```python
 import torch
+from torch import nn
 
 # define MC-SURE
-def mc_sure(z: torch.Tensor, model, sigma: torch.Tensor, eps: float):
+def mc_sure(z: torch.Tensor, model: nn.Module, sigma: torch.Tensor, eps: float):
     """
     MC-SURE for batch.
     :param z: feature tensor, shape: [N, K]
@@ -163,7 +151,7 @@ OE: https://github.com/needylove/OrdinalEntropy
 
 ## Citation
 If this work is useful for your research, please kindly cite it:
-```
+```bibtex
 @inproceedings{yan2024vfred,
 title={Generalized robust fundus photography-based vision loss estimation for high myopia},
 author={Yan, Zipei and Liang, Zhile and Liu, Zhengji and Wang, Shuai and Chun, Rachel and Li, Jizhou and Kee, Chea-su and Liang, Dong},
