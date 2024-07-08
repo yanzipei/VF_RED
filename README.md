@@ -1,5 +1,5 @@
 # Generalized Robust Fundus Photography-based Vision Loss Estimation for High Myopia
-This paper is accepted by MICCAI 2024.
+This paper is accepted by MICCAI 2024. The preprint version is available on [ArXiv](https://arxiv.org/abs/2407.03699).
 
 ## Implementation
 
