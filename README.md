@@ -89,7 +89,7 @@ def mc_sure(z: torch.Tensor, model: nn.Module, sigma: torch.Tensor, eps: float):
     MC-SURE for batch.
     :param z: feature tensor, shape: [N, K]
     :param model: the denoising model
-    :param sigma: sigma vector, shape: [N], sigma for each feature
+    :param sigma: sigma vector, shape: [N, 1], sigma for each feature
     :param eps: epsilon, float.
     :return: sure loss vector, shape: [N].
     """
