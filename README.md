@@ -106,7 +106,7 @@ def mc_sure(z: torch.Tensor, model: nn.Module, sigma: torch.Tensor, eps: float):
     z_hat = z + b * eps
     output_hat = model(z_hat)
 
-    loss = ((z - output) ** 2).mean(dim=1) - var + 2 * var * (b * (output_hat - output)).sum(dim=1) / (K * eps)  # [N]
+    loss = ((z - output) ** 2).mean(dim=1) - var.squeeze() + 2 * var.squeeze() * (b * (output_hat - output)).sum(dim=1) / (K * eps)  # [N]
 
     return loss
 
